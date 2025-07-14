@@ -14,15 +14,17 @@ const ReportCharts = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/reports`);
-        const { profit, expenses } = response.data;
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/reports`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        const { profit, expenses, partnerShare } = response.data;
         setChartData({
-          labels: ['Profit', 'Expenses'],
+          labels: ['Profit', 'Expenses', 'Partner Share'],
           datasets: [
             {
               label: 'Financial Overview',
-              data: [profit, expenses],
-              backgroundColor: ['#4b5e40', '#8b8b8b'],
+              data: [profit, expenses, partnerShare],
+              backgroundColor: ['#4b5e40', '#8b8b8b', '#ff9900'],
             },
           ],
         });
@@ -41,7 +43,7 @@ const ReportCharts = () => {
           data={chartData}
           options={{
             responsive: true,
-            plugins: { legend: { position: 'top' }, title: { display: true, text: 'Profit vs Expenses' } },
+            plugins: { legend: { position: 'top' }, title: { display: true, text: 'Financial Overview' } },
           }}
         />
       </div>

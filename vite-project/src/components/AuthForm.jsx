@@ -13,7 +13,6 @@ const AuthForm = ({ type }) => {
   const [error, setError] = useState('');
   const [serverStatus, setServerStatus] = useState(null);
 
-  // Check backend health on mount
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
     axios.get(`${apiUrl}/health`)

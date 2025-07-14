@@ -2,17 +2,16 @@ import { useContext } from 'react';
 import { AuthContext } from '../App';
 import DataForm from '../components/DataForm';
 import DataTable from '../components/DataTable';
-import { TrendingUp, AlertTriangle } from 'lucide-react';
+import { Package, AlertTriangle } from 'lucide-react';
 
-const Production = () => {
+const Materials = () => {
   const { user } = useContext(AuthContext);
   const columns = [
-    { key: 'material', label: 'Material' },
-    { key: 'quantity', label: 'Quantity (tons)' },
-    { key: 'date', label: 'Date' },
+    { key: 'name', label: 'Material Name' },
+    { key: 'rate', label: 'Rate (₹/ton)' },
   ];
 
-  if (!['admin', 'operator'].includes(user.role)) {
+  if (!['admin', 'partner', 'operator'].includes(user.role)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="p-6 max-w-7xl mx-auto">
@@ -33,28 +32,34 @@ const Production = () => {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center mb-4">
-            <div className="p-3 rounded-lg bg-green-50 mr-4">
-              <TrendingUp className="w-8 h-8 text-green-600" />
+            <div className="p-3 rounded-lg bg-emerald-50 mr-4">
+              <Package className="w-8 h-8 text-emerald-600" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Production</h1>
-              <p className="text-gray-600 mt-1">Track daily production output</p>
+              <h1 className="text-3xl font-bold text-gray-900">Materials</h1>
+              <p className="text-gray-600 mt-1">Manage material types and rates</p>
             </div>
           </div>
         </div>
 
-        {/* Data Form */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-          <DataForm type="production" />
-        </div>
+        {/* Data Form - Only for Admin */}
+        {user.role === 'admin' && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <DataForm
+              type="materials"
+              customTitle="Add Material"
+              customFields={['name', 'rate']}
+            />
+          </div>
+        )}
 
         {/* Data Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <DataTable endpoint="production" columns={columns} />
+          <DataTable endpoint="materials" columns={columns} />
         </div>
       </div>
     </div>
   );
 };
 
-export default Production;
+export default Materials;

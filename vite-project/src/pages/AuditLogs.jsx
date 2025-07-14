@@ -7,10 +7,11 @@ const AuditLogs = () => {
   const columns = [
     { key: 'action', label: 'Action' },
     { key: 'user', label: 'User' },
+    { key: 'details', label: 'Details' },
     { key: 'date', label: 'Date' },
   ];
 
-  if (user.role !== 'partner') {
+  if (!['admin', 'partner'].includes(user.role)) {
     return <div className="p-6 text-red-500">Access Denied</div>;
   }
 

@@ -8,26 +8,30 @@ const NotificationBanner = () => {
   const { user } = useContext(AuthContext);
   const [notifications, setNotifications] = useState([]);
   const [enabled, setEnabled] = useState(true);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/notifications`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/notifications`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         setNotifications(response.data);
-        response.data.forEach((notif) => toast.info(notif.message));
+        response.data.slice((page - 1) * rowsPerPage, page * rowsPerPage).forEach((notif) =>
+          toast.info(notif.message, { toastId: notif._id })
+        );
       } catch (err) {
         console.error('Error fetching notifications:', err);
       }
     };
     fetchNotifications();
-  }, [user]);
+  }, [user, page]);
 
   const toggleNotifications = async () => {
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URL}/notifications/toggle`,
+        `${import.meta.env.VITE_API_URL}/notifications/toggle`,
         { enabled: !enabled },
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -36,6 +40,11 @@ const NotificationBanner = () => {
     } catch (err) {
       console.error('Error toggling notifications:', err);
     }
+  };
+
+  const dismissNotification = (id) => {
+    toast.dismiss(id);
+    setNotifications(notifications.filter((n) => n._id !== id));
   };
 
   return (
@@ -48,6 +57,36 @@ const NotificationBanner = () => {
           {enabled ? 'Disable Notifications' : 'Enable Notifications'}
         </button>
       )}
+      <div className="mt-2">
+        {notifications.slice((page - 1) * rowsPerPage, page * rowsPerPage).map((notif) => (
+          <div key={notif._id} className="bg-yellow-100 p-2 rounded-md mb-2 flex justify-between">
+            <span>{notif.message}</span>
+            <button
+              className="text-red-500"
+              onClick={() => dismissNotification(notif._id)}
+            >
+              Dismiss
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-between">
+        <button
+          className="bg-blue-500 text-white p-2 rounded-md"
+          onClick={() => setPage(page - 1)}
+          disabled={page === 1}
+        >
+          Previous
+        </button>
+        <span>Page {page} of {Math.ceil(notifications.length / rowsPerPage)}</span>
+        <button
+          className="bg-blue-500 text-white p-2 rounded-md"
+          onClick={() => setPage(page + 1)}
+          disabled={page * rowsPerPage >= notifications.length}
+        >
+          Next
+        </button>
+      </div>
       <ToastContainer />
     </div>
   );

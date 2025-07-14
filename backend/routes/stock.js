@@ -7,16 +7,23 @@ const Notification = require('../models/Notification');
 router.get('/', auth, async (req, res) => {
   try {
     const stocks = await Stock.find();
-    const lowStock = stocks.filter((stock) => stock.quantity < 100); // Example threshold
+    const lowStock = stocks.filter((stock) => stock.quantity < 50); // Threshold from frontend
     for (const stock of lowStock) {
-      await Notification.create({
+      const existing = await Notification.findOne({
+        type: 'low_stock',
         message: `Low stock alert: ${stock.material} has ${stock.quantity} tons`,
-        type: 'low-stock',
       });
+      if (!existing) {
+        await Notification.create({
+          message: `Low stock alert: ${stock.material} has ${stock.quantity} tons`,
+          type: 'low_stock',
+        });
+      }
     }
     res.json(stocks);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Stock fetch error:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
