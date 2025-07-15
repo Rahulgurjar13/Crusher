@@ -8,6 +8,7 @@ import { DollarSign, AlertTriangle } from 'lucide-react';
 
 const Sales = () => {
   const { user } = useContext(AuthContext);
+
   const columns = [
     { key: 'vendor', label: 'Vendor' },
     { key: 'material', label: 'Material' },
@@ -74,7 +75,7 @@ const Sales = () => {
     }
   };
 
-  if (!['admin', 'operator'].includes(user.role)) {
+  if (!['admin', 'operator', 'partner'].includes(user.role)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="p-6 max-w-7xl mx-auto">
@@ -105,12 +106,14 @@ const Sales = () => {
           </div>
         </div>
 
-        {/* Data Form */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
-          <DataForm type="sales" />
-        </div>
+        {/* Data Form - only for admin and operator */}
+        {['admin', 'operator'].includes(user.role) && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <DataForm type="sales" />
+          </div>
+        )}
 
-        {/* Data Table */}
+        {/* Data Table - visible to admin, operator, and partner */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <DataTable endpoint="sales" columns={columns} />
         </div>

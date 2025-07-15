@@ -227,9 +227,9 @@ function App() {
               <Route path="/dashboard" element={<PrivateRoute roles={['admin', 'partner', 'operator']}><Dashboard /></PrivateRoute>} />
               <Route path="/production" element={<PrivateRoute roles={['admin', 'operator']}><Production /></PrivateRoute>} />
               <Route path="/dispatch" element={<PrivateRoute roles={['admin', 'operator']}><Dispatch /></PrivateRoute>} />
-              <Route path="/sales" element={<PrivateRoute roles={['admin', 'operator']}><Sales /></PrivateRoute>} />
-              <Route path="/expenses" element={<PrivateRoute roles={['admin', 'operator']}><Expenses /></PrivateRoute>} />
-              <Route path="/stock" element={<PrivateRoute roles={['admin', 'partner', 'operator']}><Stock /></PrivateRoute>} />
+              <Route path="/sales" element={<PrivateRoute roles={['admin', 'operator', 'partner']}><Sales /></PrivateRoute>} />
+              <Route path="/expenses" element={<PrivateRoute roles={['admin', 'operator', 'partner']}><Expenses /></PrivateRoute>} />
+              <Route path="/stock" element={<PrivateRoute roles={['admin', 'partner', 'operator', 'partner']}><Stock /></PrivateRoute>} />
               <Route path="/rates" element={<PrivateRoute roles={['admin', 'partner', 'operator']}><Rates /></PrivateRoute>} />
               <Route path="/vendor-ledger" element={<PrivateRoute roles={['admin', 'partner']}><VendorLedger /></PrivateRoute>} />
               <Route path="/maintenance" element={<PrivateRoute roles={['admin', 'operator']}><Maintenance /></PrivateRoute>} />
